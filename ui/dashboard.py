@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QTimer
 from detection.detector import WasteDetector
-from detection.categories import CATEGORY_MAP
+from detection.categories import WASTE_INFO
 from database.db_manager import DatabaseManager
 from ui.cards import KPICard
 from ui.charts import StatsCanvas
@@ -32,6 +32,13 @@ class WasteApp(QWidget):
         self.detector = WasteDetector(
             "medical_waste_best.pt"
         )
+        self.class_stats = {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "D": 0,
+            "E": 0
+        }
         # DATABASE
         self.db = DatabaseManager()
         # CAMERA
@@ -48,6 +55,13 @@ class WasteApp(QWidget):
         self.init_ui()
     # ================= UI =================
     def init_ui(self):
+        self.class_stats = {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "D": 0,
+            "E": 0
+        }
         self.setStyleSheet("""
             QWidget {
                 background-color: #121212;
@@ -181,20 +195,53 @@ class WasteApp(QWidget):
             1
         )
         
+        self.kpi_class_a = KPICard(
+            "Class A",
+            0,
+            "#2ecc71"
+        )
+
+        self.kpi_class_b = KPICard(
+            "Class B",
+            0,
+            "#f1c40f"
+        )
+
+        self.kpi_class_c = KPICard(
+            "Class C",
+            0,
+            "#e74c3c"
+        )
+
+        self.kpi_class_d = KPICard(
+            "Class D",
+            0,
+            "#9b59b6"
+        )
+
+        self.kpi_class_e = KPICard(
+            "Class E",
+            0,
+            "#34495e"
+        )
+        kpi_grid.addWidget(self.kpi_class_a, 3, 0)
+        kpi_grid.addWidget(self.kpi_class_b, 3, 1)
+
+        kpi_grid.addWidget(self.kpi_class_c, 4, 0)
+        kpi_grid.addWidget(self.kpi_class_d, 4, 1)
+
+        kpi_grid.addWidget(self.kpi_class_e, 5, 0)
+        
         # INFO LABELS
-        self.info_label = QLabel(
-            "Detection: -"
-        )
-        self.category_label = QLabel(
-            "Category: -"
-        )
-        self.fps_label = QLabel(
-            "FPS: 0"
-        )
+        self.info_label = QLabel("Detection: -")
+        self.category_label = QLabel("Category: -")
+        self.class_label = QLabel("Class: -")
+        self.fps_label = QLabel("FPS: 0")
         for lbl in [
             self.info_label,
             self.category_label,
-            self.fps_label
+            self.fps_label,
+            self.class_label
         ]:
             lbl.setStyleSheet("""
                 font-size: 14px;
@@ -273,14 +320,18 @@ class WasteApp(QWidget):
             cls = int(box.cls[0])
             conf = float(box.conf[0])
             label = names[cls]
-            category = CATEGORY_MAP.get(
-                label,
-                "General Waste"
-            )
+            info = WASTE_INFO.get(label)
+            if info:
+                category = info["category"]
+                risk_class = info["class"]
+            else:
+                category = "General Waste"
+                risk_class = "A"
             frame_stats[category] = (
                 frame_stats.get(category, 0) + 1
             )
             if track_id not in self.counted_ids:
+                self.class_stats[risk_class] += 1
                 self.counted_ids.add(track_id)
                 self.total_stats[category] = (
                     self.total_stats.get(category, 0) + 1
@@ -291,6 +342,7 @@ class WasteApp(QWidget):
                 self.db.insert_detection(
                     label,
                     category,
+                    risk_class,
                     round(conf, 2),
                     timestamp
                 )
@@ -327,6 +379,25 @@ class WasteApp(QWidget):
                 "General Waste",
                 0
             )
+        )
+        self.kpi_class_a.update_value(
+            self.class_stats["A"]
+        )
+
+        self.kpi_class_b.update_value(
+            self.class_stats["B"]
+        )
+
+        self.kpi_class_c.update_value(
+            self.class_stats["C"]
+        )
+
+        self.kpi_class_d.update_value(
+            self.class_stats["D"]
+        )
+
+        self.kpi_class_e.update_value(
+            self.class_stats["E"]
         )
         # CHART UPDATE
         self.chart.update_chart(
@@ -367,10 +438,14 @@ class WasteApp(QWidget):
                 cls = int(box.cls[0])
                 conf = float(box.conf[0])
                 label = names[cls]
-                category = CATEGORY_MAP.get(
-                    label,
-                    "General Waste"
-                )
+                info = WASTE_INFO.get(label)
+
+                if info:
+                    category = info["category"]
+                    risk_class = info["class"]
+                else:
+                    category = "General Waste"
+                    risk_class = "A"
                 frame_stats[category] = (
                     frame_stats.get(category, 0) + 1
                 )
@@ -386,6 +461,9 @@ class WasteApp(QWidget):
             )
             self.category_label.setText(
                 "Category: " + ", ".join(categories)
+            )
+            self.class_label.setText(
+                f"Class: {risk_class}"
             )
         self.chart.update_chart(
             self.total_stats

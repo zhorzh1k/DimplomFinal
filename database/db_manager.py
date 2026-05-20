@@ -11,6 +11,7 @@ class DatabaseManager:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             object_name TEXT,
             waste_category TEXT,
+            risk_class TEXT,
             confidence REAL,
             detection_time TEXT
         )
@@ -21,20 +22,23 @@ class DatabaseManager:
         self,
         object_name,
         waste_category,
+        risk_class,
         confidence,
         detection_time
     ):
         self.cursor.execute("""
-        INSERT INTO detections (
-            object_name,
-            waste_category,
-            confidence,
-            detection_time
-        )
-        VALUES (?, ?, ?, ?)
+            INSERT INTO detections (
+                object_name,
+                waste_category,
+                risk_class,
+                confidence,
+                detection_time
+            )
+            VALUES (?, ?, ?, ?, ?)
         """, (
             object_name,
             waste_category,
+            risk_class,
             confidence,
             detection_time
         ))

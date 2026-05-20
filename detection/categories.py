@@ -1,24 +1,102 @@
-CATEGORY_MAP = {
-    "syringe": "Sharps Waste",
-    "scalpel": "Sharps Waste",
-    "tweezer": "Sharps Waste",
-    "pipette": "Sharps Waste",
+WASTE_INFO = {
 
-    "mask": "Infectious Waste",
-    "gloves": "Infectious Waste",
-    "bandage": "Infectious Waste",
-    "cotton_swab": "Infectious Waste",
+    # ================= SHARPS =================
 
-    "medicine": "Pharmaceutical Waste",
-    "medicine_packaging": "Pharmaceutical Waste",
-    "infusion_bag": "Pharmaceutical Waste",
+    "syringe": {
+        "category": "Sharps Waste",
+        "class": "C"
+    },
 
-    "chemical_container": "Chemical Waste",
-    "reagent_tube": "Chemical Waste",
+    "scalpel": {
+        "category": "Sharps Waste",
+        "class": "C"
+    },
 
-    "general_waste": "General Waste",
-    "can": "General Waste",
-    "juice_box": "General Waste",
-    "nylon_bag": "General Waste",
-    "waterbottle": "General Waste"
+    "tweezer": {
+        "category": "Sharps Waste",
+        "class": "B"
+    },
+
+    "pipette": {
+        "category": "Sharps Waste",
+        "class": "B"
+    },
+
+    # ================= INFECTIOUS =================
+
+    "gloves": {
+        "category": "Infectious Waste",
+        "class": "B"
+    },
+
+    "mask": {
+        "category": "Infectious Waste",
+        "class": "B"
+    },
+
+    "bandage": {
+        "category": "Infectious Waste",
+        "class": "C"
+    },
+
+    "cotton_swab": {
+        "category": "Infectious Waste",
+        "class": "B"
+    },
+
+    # ================= PHARMACEUTICAL =================
+
+    "medicine": {
+        "category": "Pharmaceutical Waste",
+        "class": "D"
+    },
+
+    "medicine_packaging": {
+        "category": "Pharmaceutical Waste",
+        "class": "B"
+    },
+
+    "infusion_bag": {
+        "category": "Pharmaceutical Waste",
+        "class": "C"
+    },
+
+    # ================= CHEMICAL =================
+
+    "chemical_container": {
+        "category": "Chemical Waste",
+        "class": "D"
+    },
+
+    "reagent_tube": {
+        "category": "Chemical Waste",
+        "class": "D"
+    },
+
+    # ================= GENERAL =================
+
+    "general_waste": {
+        "category": "General Waste",
+        "class": "A"
+    },
+
+    "can": {
+        "category": "General Waste",
+        "class": "A"
+    },
+
+    "juice_box": {
+        "category": "General Waste",
+        "class": "A"
+    },
+
+    "nylon_bag": {
+        "category": "General Waste",
+        "class": "A"
+    },
+
+    "waterbottle": {
+        "category": "General Waste",
+        "class": "A"
+    }
 }
